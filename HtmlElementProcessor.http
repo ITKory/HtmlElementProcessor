@@ -1,0 +1,16 @@
+@HtmlElementProcessor_HostAddress = http://localhost:5084
+
+POST {{HtmlElementProcessor_HostAddress}}/api/process
+Content-Type: application/json
+Accept: application/json
+
+{
+  "selector": "<CSS_SELECTOR>",
+  "attribute": "<ATTRIBUTE_NAME>",
+  "url_b64": "<URL_BASE64>",
+  "encrypted_text_bytes_b64": "<CIPHERTEXT_BASE64>",
+  "key_bytes_b64": "<AES256_KEY_BASE64>",
+  "page_b64": "<HTML_BASE64>"
+}
+
+###

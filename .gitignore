@@ -1,0 +1,7 @@
+.idea/
+bin/
+obj/
+*.cache
+*.info
+project.assets.json
+project.nuget.cache
