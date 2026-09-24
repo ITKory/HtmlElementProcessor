@@ -1,0 +1,55 @@
+services:
+  api:
+    build: .
+    container_name: html-api
+    ports:
+      - "8090:8090"
+    volumes:
+      - ./:/src
+      - nuget-cache:/root/.nuget/packages
+      - obj:/src/obj
+      - bin:/src/bin
+    environment:
+      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=html_element_processor;Username=html_user;Password=html_password"
+      ASPNETCORE_ENVIRONMENT: Development
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:18
+    container_name: html-postgres
+    environment:
+      POSTGRES_DB: html_element_processor
+      POSTGRES_USER: html_user
+      POSTGRES_PASSWORD: html_password
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U html_user -d html_element_processor"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: html-pgadmin
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    volumes:
+      - pgadmin-mount:/pgadmin4
+      - ./pgadmin-servers.json:/pgadmin4/servers.json:ro
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:
+  nuget-cache:
+  obj:
+  bin:
+  pgadmin-mount:
